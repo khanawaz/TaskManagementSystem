@@ -16,13 +16,25 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const frontendDistPath = path.resolve(__dirname, '../../frontend_TaskManager/dist')
 
-const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173'
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://distinguished-empathy-production-9f42.up.railway.app'
+]
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL)
+}
 
 app.set('trust proxy', 1)
 
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: function(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true,
   }),
 )
