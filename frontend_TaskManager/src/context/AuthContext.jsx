@@ -21,6 +21,7 @@ function AuthProvider({ children }) {
         const response = await apiClient.get('/auth/me')
         setUser(response.data.user)
       } catch {
+        localStorage.removeItem('token')
         setUser(null)
       } finally {
         setIsLoading(false)
@@ -35,6 +36,7 @@ function AuthProvider({ children }) {
 
     try {
       const response = await apiClient.post('/auth/signup', payload)
+      localStorage.setItem('token', response.data.token)
       setUser(response.data.user)
       return response.data
     } finally {
@@ -47,6 +49,7 @@ function AuthProvider({ children }) {
 
     try {
       const response = await apiClient.post('/auth/login', payload)
+      localStorage.setItem('token', response.data.token)
       setUser(response.data.user)
       return response.data
     } finally {
@@ -59,8 +62,11 @@ function AuthProvider({ children }) {
 
     try {
       await apiClient.post('/auth/logout')
-      setUser(null)
+    } catch (e) {
+      // Ignore error on logout
     } finally {
+      localStorage.removeItem('token')
+      setUser(null)
       setIsAuthenticating(false)
     }
   }
