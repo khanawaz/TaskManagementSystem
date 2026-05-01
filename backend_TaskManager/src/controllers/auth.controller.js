@@ -121,10 +121,13 @@ const getCurrentUser = async (request, response) => {
 }
 
 const logout = async (_request, response) => {
+  const isProduction = process.env.NODE_ENV === 'production'
+
   response.clearCookie('token', {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction,
   })
 
   response.status(200).json({

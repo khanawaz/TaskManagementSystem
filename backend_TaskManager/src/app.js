@@ -18,6 +18,8 @@ const frontendDistPath = path.resolve(__dirname, '../../frontend_TaskManager/dis
 
 const allowedOrigin = process.env.CLIENT_URL || 'http://localhost:5173'
 
+app.set('trust proxy', 1)
+
 app.use(
   cors({
     origin: allowedOrigin,

@@ -1,10 +1,13 @@
 const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000
 
 const sendAuthResponse = ({ response, statusCode, message, user, token }) => {
+  const isProduction = process.env.NODE_ENV === 'production'
+
   response.cookie('token', token, {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction,
     maxAge: sevenDaysInMs,
   })
 
